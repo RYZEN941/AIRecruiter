@@ -1,0 +1,66 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Large dataset files ────────────────────────────────────────────────────────
+# The full candidate pool is 465 MB — never commit it
+data/candidates.jsonl
+data/candidates.jsonl.gz
+
+# Generated JSONL conversion of sample (original JSON is kept instead)
+data/sample_candidates.jsonl
+
+# ── Generated embeddings & FAISS index ────────────────────────────────────────
+# These are built by precompute.py and are too large for git
+embeddings/*.npy
+embeddings/*.bin
+embeddings/candidate_ids.json
+embeddings/candidate_cache_meta.json
+embeddings/llm_scores_cache.json
+
+# ── Output / submission artifacts ─────────────────────────────────────────────
+output/*.csv
+output/submission.csv
+output/sample_submission_test.csv
+
+# ── Environment / secrets ──────────────────────────────────────────────────────
+.env
+# Keep .env.example (it documents required variables without real values)
+
+# ── OS noise ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDE / editor ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Extracted text scratch files (generated during analysis) ──────────────────
+data/jd_extracted.txt
+data/signals_extracted.txt
+data/spec_extracted.txt
+
+# ── What IS tracked (for reference) ───────────────────────────────────────────
+# Source code:         *.py in all packages
+# Dependencies:        requirements.txt
+# Documentation:       README.md, data/README.docx
+# Schema:              data/candidate_schema.json
+# Sample data:         data/sample_candidates.json, data/sample_candidates.jsonl
+# Submission template: data/submission_metadata_template.yaml
+# Submission spec:     data/submission_spec.docx
+# JD docs:             data/job_description.docx, data/redrob_signals_doc.docx
+# Validator:           data/validate_submission.py
+# Sample submission:   data/sample_submission.csv
