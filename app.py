@@ -12,7 +12,6 @@ No API keys. No network calls. CPU only.
 import io
 import json
 import sys
-import tempfile
 from pathlib import Path
 
 import numpy as np

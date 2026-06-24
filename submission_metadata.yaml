@@ -21,9 +21,7 @@ team_members:
 # ============================================================================
 github_repo: "https://github.com/RYZEN941/AIRecruiter"
 
-sandbox_link: "https://huggingface.co/spaces/RYZEN941/beyondkeywords-ranker"
-# TODO: Update this URL after deploying the Streamlit sandbox to HF Spaces.
-# The sandbox accepts a small candidate sample (<=100) and returns a ranked CSV.
+sandbox_link: "https://huggingface.co/spaces/ritik-ranjan/beyondkeywords-ranker"
 
 reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv"
 # Requires pre-computed artifacts in embeddings/.
