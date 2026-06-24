@@ -1,0 +1,91 @@
+# Redrob Hackathon — Submission Metadata
+# Team: BeyondKeywords
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "BeyondKeywords"
+
+primary_contact:
+  name: "Ritik Ranjan"
+  email: "ritikranjan941@gmail.com"
+  phone: "+91-8092785006"
+
+team_members:
+  - name: "Ritik Ranjan"
+    email: "ritikranjan941@gmail.com"
+    role: "Solo — ML Engineer"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/RYZEN941/AIRecruiter"
+
+sandbox_link: "https://huggingface.co/spaces/RYZEN941/beyondkeywords-ranker"
+# TODO: Update this URL after deploying the Streamlit sandbox to HF Spaces.
+# The sandbox accepts a small candidate sample (<=100) and returns a ranked CSV.
+
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv"
+# Requires pre-computed artifacts in embeddings/.
+# To build artifacts from scratch (run once, ~45 min on CPU):
+#   python precompute.py --candidates ./candidates.jsonl
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "Windows 11 — Local machine"
+  cpu_cores: 8
+  ram_gb: 16
+  python_version: "3.13"
+  os: "Windows 11"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 45   # Approximate — embedding 100K candidates on CPU
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+ai_tools_used:
+  - "Gemini"       # Used for architecture discussion, code review, and code generation assistance
+  - "GitHub Copilot"  # Used for autocomplete
+
+ai_usage_summary: |
+  Used Gemini (via Antigravity coding assistant) for architecture planning,
+  code scaffolding, and iterative debugging. Used GitHub Copilot for inline
+  autocomplete. All candidate data remained local — no candidate records were
+  sent to any external API. The ranking logic, signal weights, honeypot
+  heuristics, and disqualifier rules were designed and iterated on by the
+  team member based on reading the JD, schema, and signals documentation.
+  The final ranking pipeline is fully offline with no LLM calls at ranking time.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  Two-phase offline pipeline. Phase 1 (pre-computation, ~45 min): embed all
+  100K candidates using all-MiniLM-L6-v2 (384-dim, CPU) and build a FAISS
+  flat inner-product index. Phase 2 (ranking, ~40s, no network): query FAISS
+  for the top-2000 by JD-cosine similarity, extract structured features per
+  candidate, apply a 6-signal weighted scorer (semantic 25%, title tier 20%,
+  skill depth 25%, availability 15%, experience fit 10%, location 5%), then
+  apply multiplicative disqualifier and honeypot penalties. Title fit uses a
+  rule-based 5-tier classifier tuned to the JD. Skill depth weights
+  proficiency level, months of duration, and endorsement count per required
+  skill bucket. Honeypot detection uses 6 heuristic rules targeting impossible
+  signal combinations (e.g., expert proficiency with zero duration, experience
+  exceeding company age). The 5% LLM bonus weight is redistributed to skill
+  depth (fully offline, Option B). Output is a 100-row CSV with monotonically
+  non-increasing scores and per-candidate reasoning strings citing specific
+  profile facts.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true     # scoring/honeypot_detector.py applies near-zero multiplier
+  reproduction_tested: true     # rank.py tested end-to-end; validate_submission.py passes
