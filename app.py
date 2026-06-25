@@ -86,20 +86,54 @@ st.markdown("""
              border-radius:5px; padding:1px 7px; font-size:0.78rem; }
 
 /* ── Rank number ── */
-.rank-num { font-size:1.1rem; font-weight:800; color:#2d2d8e; }
+.rank-num { font-size:1.1rem; font-weight:800; color:#a0b4ff; }
 
-/* ── Section header ── */
+/* ── Section header — bright on dark bg ── */
 .section-hdr {
-    font-size: 1.15rem; font-weight: 700; color: #1a1a4e;
-    border-left: 4px solid #2d2d8e; padding-left: 10px;
+    font-size: 1.15rem; font-weight: 700; color: #dde6ff;
+    border-left: 4px solid #7c9cff; padding-left: 10px;
     margin: 1.2rem 0 0.7rem;
 }
 
 /* ── Divider ── */
-hr { margin: 1rem 0; border-color: #e0e3ff; }
+hr { margin: 1rem 0; border-color: rgba(255,255,255,0.12); }
 
 /* ── Hide Streamlit default footer ── */
 footer { visibility: hidden; }
+
+/* ── Rankings table: bright text on dark theme ── */
+.rank-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+.rank-table thead tr {
+    background: rgba(80,100,220,0.35);
+    border-bottom: 2px solid rgba(120,150,255,0.4);
+}
+.rank-table thead th {
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 700;
+    color: #e8eeff;
+    letter-spacing: 0.02em;
+}
+.rank-table thead th.center { text-align: center; }
+.rank-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.rank-table tbody tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+.rank-table td {
+    padding: 9px 8px;
+    vertical-align: middle;
+}
+.td-id    { font-size:0.78rem; color:#99aacc; font-family:monospace; }
+.td-name  { font-weight:700;   color:#ffffff; }
+.td-title { color:#c8d8f8; }
+.td-yoe   { text-align:center; color:#d0d8ee; }
+.td-score { text-align:center; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -272,7 +306,7 @@ def _render_hero():
 
 
 # ── Data loading section ───────────────────────────────────────────────────────
-def _load_candidates() -> list | None:
+def _load_candidates():
     """
     Renders the data source selector and returns a list of candidate dicts,
     or None if nothing is ready yet.
@@ -291,9 +325,12 @@ def _load_candidates() -> list | None:
             label_visibility="collapsed",
         )
 
+    # key keeps checkbox state stable across reruns; no dynamic value= to avoid
+    # fighting user intent when they switch between sample and upload.
+    if "use_sample_cb" not in st.session_state:
+        st.session_state["use_sample_cb"] = True
     use_sample = st.checkbox(
         "Use built-in sample data (50 candidates from hackathon bundle)",
-        value=(uploaded_file is None),
         key="use_sample_cb",
     )
 
@@ -422,42 +459,36 @@ def _render_results():
         display_cols = [c for c in display_cols if c in df.columns]
         disp = df[display_cols].copy()
 
-        # Render as HTML table with colour-coded score badges
+        # Render as styled HTML table — all colours set for dark-theme readability
         rows_html = ""
         for _, row in disp.iterrows():
-            rank = int(row["rank"])
-            medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(rank, f"#{rank}")
-            score = row.get("final_score", 0)
-            badge = _badge(score)
+            rank  = int(row["rank"])
+            medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(rank, f"<span class='rank-num'>#{rank}</span>")
+            badge = _badge(row.get("final_score", 0))
             cid   = row.get("candidate_id", "")
             name  = row.get("name", "—")
             title = row.get("current_title", "—")
             yoe   = f"{row.get('years_of_experience', 0):.1f}y"
             rows_html += (
                 f"<tr>"
-                f"<td><span class='rank-num'>{medal}</span></td>"
-                f"<td style='font-size:0.8rem;color:#555'>{cid}</td>"
-                f"<td><strong>{name}</strong></td>"
-                f"<td style='color:#444'>{title}</td>"
-                f"<td style='text-align:center'>{yoe}</td>"
-                f"<td style='text-align:center'>{badge}</td>"
+                f"<td>{medal}</td>"
+                f"<td class='td-id'>{cid}</td>"
+                f"<td class='td-name'>{name}</td>"
+                f"<td class='td-title'>{title}</td>"
+                f"<td class='td-yoe'>{yoe}</td>"
+                f"<td class='td-score'>{badge}</td>"
                 f"</tr>"
             )
-        st.markdown(f"""
-<table style="width:100%;border-collapse:collapse;font-size:0.9rem">
-  <thead>
-    <tr style="background:#f0f2ff;color:#1a1a4e;font-weight:700">
-      <th style="padding:8px 6px;text-align:left">Rank</th>
-      <th style="padding:8px 6px;text-align:left">ID</th>
-      <th style="padding:8px 6px;text-align:left">Name</th>
-      <th style="padding:8px 6px;text-align:left">Title</th>
-      <th style="padding:8px 6px;text-align:center">Exp</th>
-      <th style="padding:8px 6px;text-align:center">Score</th>
-    </tr>
-  </thead>
-  <tbody>{rows_html}</tbody>
-</table>
-""", unsafe_allow_html=True)
+        st.markdown(
+            f"<table class='rank-table'>"
+            f"<thead><tr>"
+            f"<th>Rank</th><th>ID</th><th>Name</th><th>Title</th>"
+            f"<th class='center'>Exp</th><th class='center'>Score</th>"
+            f"</tr></thead>"
+            f"<tbody>{rows_html}</tbody>"
+            f"</table>",
+            unsafe_allow_html=True,
+        )
 
     # ── Tab 2: Signal Breakdown ────────────────────────────────────────────────
     with tab_signals:
@@ -556,9 +587,8 @@ def _render_results():
                 key="dl_json",
             )
         st.info(
-            "To validate submission.csv locally:\n"
-            "```\npython data/validate_submission.py ./submission.csv\n```",
-            icon="ℹ️",
+            "To validate submission.csv locally: "
+            "`python data/validate_submission.py ./submission.csv`"
         )
 
 
