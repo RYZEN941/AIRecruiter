@@ -86,53 +86,53 @@ st.markdown("""
              border-radius:5px; padding:1px 7px; font-size:0.78rem; }
 
 /* ── Rank number ── */
-.rank-num { font-size:1.1rem; font-weight:800; color:#a0b4ff; }
+.rank-num { font-size:1.1rem; font-weight:800; color:#3730a3; }
 
-/* ── Section header — bright on dark bg ── */
+/* ── Section header — strong contrast on light theme ── */
 .section-hdr {
-    font-size: 1.15rem; font-weight: 700; color: #dde6ff;
+    font-size: 1.15rem; font-weight: 700; color: #1F2937;
     border-left: 4px solid #7c9cff; padding-left: 10px;
     margin: 1.2rem 0 0.7rem;
 }
 
 /* ── Divider ── */
-hr { margin: 1rem 0; border-color: rgba(255,255,255,0.12); }
+hr { margin: 1rem 0; border-color: rgba(0,0,0,0.10); }
 
 /* ── Hide Streamlit default footer ── */
 footer { visibility: hidden; }
 
-/* ── Rankings table: bright text on dark theme ── */
+/* ── Rankings table: dark text for light theme ── */
 .rank-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.92rem;
 }
 .rank-table thead tr {
-    background: rgba(80,100,220,0.35);
-    border-bottom: 2px solid rgba(120,150,255,0.4);
+    background: rgba(80,100,220,0.10);
+    border-bottom: 2px solid rgba(80,100,220,0.25);
 }
 .rank-table thead th {
     padding: 10px 8px;
     text-align: left;
     font-weight: 700;
-    color: #e8eeff;
+    color: #1F2937;
     letter-spacing: 0.02em;
 }
 .rank-table thead th.center { text-align: center; }
 .rank-table tbody tr {
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 .rank-table tbody tr:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(80,100,220,0.04);
 }
 .rank-table td {
     padding: 9px 8px;
     vertical-align: middle;
 }
-.td-id    { font-size:0.78rem; color:#99aacc; font-family:monospace; }
-.td-name  { font-weight:700;   color:#ffffff; }
-.td-title { color:#c8d8f8; }
-.td-yoe   { text-align:center; color:#d0d8ee; }
+.td-id    { font-size:0.78rem; color:#4B5563; font-family:monospace; }
+.td-name  { font-weight:700;   color:#111827; }
+.td-title { color:#374151; }
+.td-yoe   { text-align:center; color:#374151; }
 .td-score { text-align:center; }
 </style>
 """, unsafe_allow_html=True)
